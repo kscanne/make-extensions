@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# script that builds spell checker extension for LO/OOo, addon for mozilla
+
+if [ $# -ne 5 ]
+then
+	echo "Usage: make-exts [xx_YY|xx-YY|xx-Yyyy-ZZ] LANGENGLISH COUNTRYENGLISH VERSION PACKAGENAME"
+	echo "e.g. $ make-exts ga_IE Irish Ireland 4.4 'Litreoir GaelSpell do Mhozilla'"
+	echo "e.g. $ make-exts ht_HT 'Haitian Creole' Haiti 0.02 KOK"
+	echo "The first argument should match the filenames in the pwd:"
+	echo "xx_YY.aff, xx_YY.dic, README_xx_YY.txt"
+	exit 1
+fi
+
+MYLOCALE="${1}"
+MYLOCALEHYPH=`echo ${MYLOCALE} | sed 's/_/-/g'`
+TEANGABEARLA="${2}"
+TIRBEARLA="${3}"
+LEAGAN="${4}"
+PACAISTE="${5}"
+TEANGA=`echo ${MYLOCALE} | sed 's/[_-].*//'`
+BASEDIR=.
+
+if [ ! -e ${MYLOCALE}.aff -o ! -e ${MYLOCALE}.dic -o ! -e README_${MYLOCALE}.txt ]
+then
+	echo "Files ${MYLOCALE}.aff, ${MYLOCALE}.dic, README_${MYLOCALE}.txt required."
+	exit 1
+fi
+
+chmod 644 ${MYLOCALE}.dic ${MYLOCALE}.aff README_${MYLOCALE}.txt
+
+# OpenOffice.org v2
+echo
+echo "Creating OpenOffice.org v2 package... ${MYLOCALE}.zip"
+zip ${MYLOCALE} ${MYLOCALE}.dic ${MYLOCALE}.aff README_${MYLOCALE}.txt
+chmod 644 ${MYLOCALE}.zip
+
+# Mozilla add-on xpi
+echo
+echo "Creating Mozilla addon... ${MYLOCALEHYPH}-dictionary.xpi"
+rm -Rf dictionaries
+mkdir dictionaries
+cp ${MYLOCALE}.dic dictionaries/${MYLOCALEHYPH}.dic
+cp ${MYLOCALE}.aff dictionaries/${MYLOCALEHYPH}.aff
+cp README_${MYLOCALE}.txt dictionaries
+cat ${BASEDIR}/mozilla-model/install.rdf | sed "s/MYLOCALEHYPH/${MYLOCALEHYPH}/; s/PACAISTE/${PACAISTE}/; s/LEAGAN/${LEAGAN}/" > install.rdf
+cat ${BASEDIR}/mozilla-model/install.js | sed "s/MYLOCALEHYPH/${MYLOCALEHYPH}/; s/PACAISTE/${PACAISTE}/; s/LEAGAN/${LEAGAN}/" > install.js
+zip -r ${MYLOCALEHYPH}-dictionary.xpi dictionaries install.rdf install.js
+rm -f install.rdf install.js
+mv dictionaries/${MYLOCALEHYPH}.dic dictionaries/${MYLOCALE}.dic
+mv dictionaries/${MYLOCALEHYPH}.aff dictionaries/${MYLOCALE}.aff
+
+# LibreOffice/OpenOffice.org 3+ oxt extension
+echo
+echo "Creating LibreOffice/OpenOffice.org v3+ extension... hunspell-${TEANGA}-${LEAGAN}.oxt"
+rm -Rf META-INF
+mkdir META-INF
+cp ${BASEDIR}/ooo-model/manifest.xml META-INF
+chmod 644 META-INF/manifest.xml
+cat ${BASEDIR}/ooo-model/description.xml | sed "s/TEANGABEARLA/${TEANGABEARLA}/; s/LEAGAN/${LEAGAN}/" > description.xml
+cat ${BASEDIR}/ooo-model/dictionaries.xcu | sed "s/MYLOCALEHYPH/${MYLOCALEHYPH}/; s/MYLOCALE/${MYLOCALE}/g" > dictionaries.xcu
+cp ${BASEDIR}/ooo-model/LICENSES-en.txt .
+zip -r hunspell-${TEANGA}-${LEAGAN}.oxt dictionaries META-INF description.xml dictionaries.xcu LICENSES-en.txt
+rm -Rf dictionaries META-INF description.xml dictionaries.xcu LICENSES-en.txt
+

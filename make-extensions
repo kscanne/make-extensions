@@ -4,9 +4,9 @@
 
 if [ $# -ne 5 ]
 then
-	echo "Usage: make-exts [xx_YY|xx-YY|xx-Yyyy-ZZ] LANGENGLISH COUNTRYENGLISH VERSION PACKAGENAME"
-	echo "e.g. $ make-exts ga_IE Irish Ireland 4.4 'Litreoir GaelSpell do Mhozilla'"
-	echo "e.g. $ make-exts ht_HT 'Haitian Creole' Haiti 0.02 KOK"
+	echo "Usage: make-extensions [xx_YY|xx-YY|xx-Yyyy-ZZ] LANGENGLISH COUNTRYENGLISH VERSION PACKAGENAME"
+	echo "e.g. $ make-extensions ga_IE Irish Ireland 4.4 'Litreoir GaelSpell do Mhozilla'"
+	echo "e.g. $ make-extensions ht_HT 'Haitian Creole' Haiti 0.02 KOK"
 	echo "The first argument should match the filenames in the pwd:"
 	echo "xx_YY.aff, xx_YY.dic, README_xx_YY.txt"
 	exit 1

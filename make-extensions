@@ -12,6 +12,9 @@ then
 	exit 1
 fi
 
+# full path of mozilla-model and ooo-model directories
+#BASEDIR=${HOME}/seal/make-extensions
+BASEDIR=${HOME}/Dearbhair
 MYLOCALE="${1}"
 MYLOCALEHYPH=`echo ${MYLOCALE} | sed 's/_/-/g'`
 TEANGABEARLA="${2}"
@@ -19,7 +22,6 @@ TIRBEARLA="${3}"
 LEAGAN="${4}"
 PACAISTE="${5}"
 TEANGA=`echo ${MYLOCALE} | sed 's/[_-].*//'`
-BASEDIR=.
 
 if [ ! -e ${MYLOCALE}.aff -o ! -e ${MYLOCALE}.dic -o ! -e README_${MYLOCALE}.txt ]
 then

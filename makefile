@@ -6,7 +6,7 @@ dist: make-extensions LICENSE README
 
 # this is for kscanne only :)
 installkps:
-	cp -f make-extensions ${HOME}/clar/script/make-exts
+	cat make-extensions | sed '/^BASEDIR/s/.*/BASEDIR=$${HOME}\/seal\/make-extensions/' > ${HOME}/clar/script/make-exts
 	chmod 700 ${HOME}/clar/script/make-exts
 
 clean:

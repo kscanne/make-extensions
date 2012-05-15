@@ -46,9 +46,9 @@ cp ${MYLOCALE}.dic dictionaries/${MYLOCALEHYPH}.dic
 cp ${MYLOCALE}.aff dictionaries/${MYLOCALEHYPH}.aff
 cp README_${MYLOCALE}.txt dictionaries
 cat ${BASEDIR}/mozilla-model/install.rdf | sed "s/MYLOCALEHYPH/${MYLOCALEHYPH}/; s/PACAISTE/${PACAISTE}/; s/LEAGAN/${LEAGAN}/" > install.rdf
-cat ${BASEDIR}/mozilla-model/install.js | sed "s/MYLOCALEHYPH/${MYLOCALEHYPH}/; s/PACAISTE/${PACAISTE}/; s/LEAGAN/${LEAGAN}/" > install.js
-zip -r ${MYLOCALEHYPH}-dictionary.xpi dictionaries install.rdf install.js
-rm -f install.rdf install.js
+#cat ${BASEDIR}/mozilla-model/install.js | sed "s/MYLOCALEHYPH/${MYLOCALEHYPH}/; s/PACAISTE/${PACAISTE}/; s/LEAGAN/${LEAGAN}/" > install.js
+zip -r ${MYLOCALEHYPH}-dictionary.xpi dictionaries install.rdf
+rm -f install.rdf
 mv dictionaries/${MYLOCALEHYPH}.dic dictionaries/${MYLOCALE}.dic
 mv dictionaries/${MYLOCALEHYPH}.aff dictionaries/${MYLOCALE}.aff
 

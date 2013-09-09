@@ -18,6 +18,7 @@ BASEDIR=${HOME}/Dearbhair
 MYLOCALE="${1}"
 MYLOCALEHYPH=`echo ${MYLOCALE} | sed 's/_/-/g'`
 TEANGABEARLA="${2}"
+GANSPAS=`echo ${TEANGABEARLA} | sed 's/ //g'`
 TIRBEARLA="${3}"
 LEAGAN="${4}"
 PACAISTE="${5}"
@@ -59,7 +60,7 @@ rm -Rf META-INF
 mkdir META-INF
 cp ${BASEDIR}/ooo-model/manifest.xml META-INF
 chmod 644 META-INF/manifest.xml
-cat ${BASEDIR}/ooo-model/description.xml | sed "s/TEANGABEARLA/${TEANGABEARLA}/; s/LEAGAN/${LEAGAN}/" > description.xml
+cat ${BASEDIR}/ooo-model/description.xml | sed "s/TEANGABEARLA/${TEANGABEARLA}/; s/LEAGAN/${LEAGAN}/; s/GANSPAS/${GANSPAS}/" > description.xml
 cat ${BASEDIR}/ooo-model/dictionaries.xcu | sed "s/MYLOCALEHYPH/${MYLOCALEHYPH}/; s/MYLOCALE/${MYLOCALE}/g" > dictionaries.xcu
 cp ${BASEDIR}/ooo-model/LICENSES-en.txt .
 zip -r hunspell-${TEANGA}-${LEAGAN}.oxt dictionaries META-INF description.xml dictionaries.xcu LICENSES-en.txt

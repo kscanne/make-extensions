@@ -29,7 +29,7 @@
         For the very same reason they should NOT start with 'org.openoffice'.
         When choosing the identifier keep in mind that others may provide a dictionary for that
         very same language as well and even then your identifier still needs to be unique! -->
-    <identifier value="Kevin.P.Scannell.TEANGABEARLA" />
+    <identifier value="Kevin.P.Scannell.GANSPAS" />
     
     <!-- A name for the extension to be used in the UI.
         For dictionaries it should show the locales supported

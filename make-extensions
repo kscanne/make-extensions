@@ -23,6 +23,8 @@ TIRBEARLA="${3}"
 LEAGAN="${4}"
 PACAISTE="${5}"
 TEANGA=`echo ${MYLOCALE} | sed 's/[_-].*//'`
+TOSACH=`pwd`
+OBAIR=`mktemp -d`
 
 if [ ! -e ${MYLOCALE}.aff -o ! -e ${MYLOCALE}.dic -o ! -e README_${MYLOCALE}.txt ]
 then
@@ -30,6 +32,8 @@ then
 	exit 1
 fi
 
+cp ${MYLOCALE}.dic ${MYLOCALE}.aff README_${MYLOCALE}.txt ${OBAIR}
+cd ${OBAIR}
 chmod 644 ${MYLOCALE}.dic ${MYLOCALE}.aff README_${MYLOCALE}.txt
 
 # OpenOffice.org v2
@@ -37,11 +41,11 @@ echo
 echo "Creating OpenOffice.org v2 package... ${MYLOCALE}.zip"
 zip ${MYLOCALE} ${MYLOCALE}.dic ${MYLOCALE}.aff README_${MYLOCALE}.txt
 chmod 644 ${MYLOCALE}.zip
+cp ${MYLOCALE}.zip ${TOSACH}
 
 # Mozilla add-on xpi
 echo
 echo "Creating Mozilla addon... ${MYLOCALEHYPH}-dictionary.xpi"
-rm -Rf dictionaries
 mkdir dictionaries
 cp ${MYLOCALE}.dic dictionaries/${MYLOCALEHYPH}.dic
 cp ${MYLOCALE}.aff dictionaries/${MYLOCALEHYPH}.aff
@@ -49,14 +53,16 @@ cp README_${MYLOCALE}.txt dictionaries
 cat ${BASEDIR}/mozilla-model/install.rdf | sed "s/MYLOCALEHYPH/${MYLOCALEHYPH}/; s/PACAISTE/${PACAISTE}/; s/LEAGAN/${LEAGAN}/" > install.rdf
 #cat ${BASEDIR}/mozilla-model/install.js | sed "s/MYLOCALEHYPH/${MYLOCALEHYPH}/; s/PACAISTE/${PACAISTE}/; s/LEAGAN/${LEAGAN}/" > install.js
 zip -r ${MYLOCALEHYPH}-dictionary.xpi dictionaries install.rdf
-rm -f install.rdf
-mv dictionaries/${MYLOCALEHYPH}.dic dictionaries/${MYLOCALE}.dic
-mv dictionaries/${MYLOCALEHYPH}.aff dictionaries/${MYLOCALE}.aff
+if [ ! "${MYLOCALEHYPH}" = "${MYLOCALE}" ]
+then
+	mv dictionaries/${MYLOCALEHYPH}.dic dictionaries/${MYLOCALE}.dic
+	mv dictionaries/${MYLOCALEHYPH}.aff dictionaries/${MYLOCALE}.aff
+fi
+cp ${MYLOCALEHYPH}-dictionary.xpi ${TOSACH}
 
 # LibreOffice/OpenOffice.org 3+ oxt extension
 echo
 echo "Creating LibreOffice/OpenOffice.org v3+ extension... hunspell-${TEANGA}-${LEAGAN}.oxt"
-rm -Rf META-INF
 mkdir META-INF
 cp ${BASEDIR}/ooo-model/manifest.xml META-INF
 chmod 644 META-INF/manifest.xml
@@ -64,5 +70,6 @@ cat ${BASEDIR}/ooo-model/description.xml | sed "s/TEANGABEARLA/${TEANGABEARLA}/;
 cat ${BASEDIR}/ooo-model/dictionaries.xcu | sed "s/MYLOCALEHYPH/${MYLOCALEHYPH}/; s/MYLOCALE/${MYLOCALE}/g" > dictionaries.xcu
 cp ${BASEDIR}/ooo-model/LICENSES-en.txt .
 zip -r hunspell-${TEANGA}-${LEAGAN}.oxt dictionaries META-INF description.xml dictionaries.xcu LICENSES-en.txt
-rm -Rf dictionaries META-INF description.xml dictionaries.xcu LICENSES-en.txt
-
+cp hunspell-${TEANGA}-${LEAGAN}.oxt ${TOSACH}
+cd ${TOSACH}
+rm -Rf ${OBAIR}
